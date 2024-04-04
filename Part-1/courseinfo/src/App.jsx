@@ -208,40 +208,45 @@ const Header = (props) => {
 // ============================ 1.5 exercise ============================
 
 const Part = (props) => {
-  console.log('Part Rendered.');
+  console.log("Part Rendered.");
   console.log(props);
 
   return (
     <>
-      <p>{props.part.name} {props.part.exercises}</p>
+      <p>
+        {props.part.name} {props.part.exercises}
+      </p>
     </>
-  )
-}
+  );
+};
 
 const Content = (props) => {
-  console.log('Content Rendered.');
+  console.log("Content Rendered.");
   console.log(props);
 
   return (
     <div>
-      <Part part={props.course.parts[0]}/>
-      <Part part={props.course.parts[1]}/>
-      <Part part={props.course.parts[2]}/>
+      <Part part={props.course.parts[0]} />
+      <Part part={props.course.parts[1]} />
+      <Part part={props.course.parts[2]} />
     </div>
-  )
-}
+  );
+};
 
 const Total = (props) => {
-  console.log('Total Rendered.');
+  console.log("Total Rendered.");
   console.log(props);
-  const total = props.course.parts.reduce((sum, part) => sum + part.exercises, 0);
+  const total = props.course.parts.reduce(
+    (sum, part) => sum + part.exercises,
+    0
+  );
 
   return (
     <div>
       <p>Number of exercise {total}</p>
     </div>
-  )
-}
+  );
+};
 
 const App = () => {
   const course = {
