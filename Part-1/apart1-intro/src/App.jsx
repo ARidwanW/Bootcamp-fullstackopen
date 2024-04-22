@@ -121,26 +121,27 @@
 //*In React, the individual things rendered in braces must be primitive values, such as numbers or strings.
 
 // using let for variable just for a test
-let App = () => {
-  const friends = [
-    { name: 'Peter', age: 4 },    // this item is an object
-    { name: 'Maya', age: 10 }
-  ]
+// let App = () => {
+//   const friends = [
+//     { name: 'Peter', age: 4 },    // this item is an object
+//     { name: 'Maya', age: 10 }
+//   ]
 
-  return (
-    <div>
-      <p>{friends[0]}</p>
-      <p>{friends[1]}</p>
-    </div>
-  )
-}
+//   return (
+//     <div>
+//       <p>{friends[0]}</p>
+//       <p>{friends[1]}</p>
+//     </div>
+//   )
+// }
 
 //?? TO FIX
 
-App = () => {
+let App = () => {
   const friends = [
     { name: 'Peter', age: 4 },    // this item is an object
-    { name: 'Maya', age: 10 }
+    { name: 'Maya', age: 10 },
+    { name: 'Alwan', age: 5 }
   ]
 
   return (
@@ -148,6 +149,7 @@ App = () => {
     <div>
       <p>{friends[0].name} {friends[0].age}</p>   
       <p>{friends[1].name} {friends[1].age}</p>
+      <p>Namanya {friends[2].name} umurnya {friends[2].age} tahun</p>
     </div>
   )
 }
