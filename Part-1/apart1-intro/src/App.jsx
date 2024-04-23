@@ -281,35 +281,187 @@ import { useState } from "react";
 
 // C.2 lift the state up
 
-const Display = ({ counter }) => <div>{counter}</div>;
+// const Display = ({ counter }) => <div>{counter}</div>;
 
-const Button = ({ onSmash, text }) => <button onClick={onSmash}>{text}</button>;
+// const Button = ({ onSmash, text }) => <button onClick={onSmash}>{text}</button>;
+
+// const App = () => {
+//   const [counter, setCounter] = useState(0);
+//   console.log("rendering with counter value", counter);
+
+//   const increaseByOne = () => {
+//     console.log("increasing, value before", counter);
+//     setCounter(counter + 1);
+//   };
+
+//   const decreaseByOne = () => {
+//     console.log("decreasing, value before", counter);
+//     setCounter(counter - 1);
+//   };
+
+//   const setToZero = () => {
+//     console.log("resetting to zero, value before", counter);
+//     setCounter(0);
+//   };
+
+//   return (
+//     <div>
+//       <Display counter={counter} />
+//       <Button onSmash={increaseByOne} text="plus" />
+//       <Button onSmash={setToZero} text="zero" />
+//       <Button onSmash={decreaseByOne} text="minus" />
+//     </div>
+//   );
+// };
+
+// export default App;
+
+// =========================================================================
+
+// D. complex state, debugging react apps
+
+// const App = () => {
+//   // const [left, setLeft] = useState(0);
+//   // const [right, setRight] = useState(0);
+//   const [clicks, setClicks] = useState({
+//     left: 0,
+//     right: 0,
+//   });
+
+//   const handleLeftClick = () => {
+//     // const newClicks = {
+//     //   //! object spread syntax must be put first in this case
+//     //   //! it will creates a new object that has copies of all of the properties
+//     //   ...clicks,
+//     //   left: clicks.left + 1,
+//     //   // right: clicks.right,
+//     // };
+//     // setClicks(newClicks);
+
+//     setClicks({ ...clicks, left: clicks.left + 1 });
+//   };
+
+//   const handleRightClick = () => {
+//     // const newClicks = {
+//     //   // left: clicks.left,
+//     //   ...clicks,
+//     //   right: clicks.right + 1,
+//     // };
+//     // setClicks(newClicks);
+
+//     setClicks({ ...clicks, right: clicks.right + 1 });
+//   };
+
+//   return (
+//     <div>
+//       {clicks.left}
+//       <button onClick={handleLeftClick}>left</button>
+//       <button onClick={handleRightClick}>right</button>
+//       {clicks.right}
+//     </div>
+//   );
+// };
+
+// export default App;
+
+// =========================================================================
+
+// D.1 Handling arrays
+
+// const App = () => {
+//   const [left, setLeft] = useState(0);
+//   const [right, setRight] = useState(0);
+//   const [allClicks, setAll] = useState([]);
+//   const [total, setTotal] = useState(0);
+
+//   const handleLeftClick = () => {
+//     //! dont do allClicks.push("L")
+//     //* concat will create a new copy of array instead of mutate the existing array
+//     //?? THE STATE OF REACT COMPONENT MUST NOT MUTATED DIRECTLY
+
+//     setAll(allClicks.concat("L"));
+
+//     console.log("left before", left);
+//     // console.log("updatedleft before", updatedLeft);
+
+//     //! this case of asynchronously updated
+//     // setLeft(left + 1);
+//     console.log("left after", left);
+
+//     //?? TO FIX asynchronous update
+//     const updatedLeft = left + 1;
+//     setLeft(updatedLeft);
+
+//     console.log("updatedleft after", updatedLeft);
+
+//     // setTotal(left + right);
+//     setTotal(updatedLeft + right);
+//   };
+
+//   const handleRightClick = () => {
+//     setAll(allClicks.concat("R"));
+//     setRight(right + 1);
+//     setTotal(left + right);
+//   };
+
+//   return (
+//     <div>
+//       {left}
+//       <button onClick={handleLeftClick}>left</button>
+//       <button onClick={handleRightClick}>right</button>
+//       {right}
+//       <p>{allClicks.join(" ")}</p>
+//       <p>total {total}</p>
+//     </div>
+//   );
+// };
+
+// export default App;
+
+// =========================================================================
+
+// D.2 Conditional rendering
+
+const History = (props) => {
+  console.log('props value is', props);
+  if (props.allClicks.length === 0) {
+    return <div>the app is used by pressing the buttons</div>;
+  }
+  return <div>button press history: {props.allClicks.join(" ")}</div>;
+};
+
+const Button = ({ handleClick, text }) => {
+  return <button onClick={handleClick}>{text}</button>;
+};
 
 const App = () => {
-  const [counter, setCounter] = useState(0);
-  console.log("rendering with counter value", counter);
+  const [left, setLeft] = useState(0);
+  const [right, setRight] = useState(0);
+  const [allClicks, setAll] = useState([]);
+  const [total, setTotal] = useState(0);
 
-  const increaseByOne = () => {
-    console.log("increasing, value before", counter);
-    setCounter(counter + 1);
+  const handleLeftClick = () => {
+    setAll(allClicks.concat("L"));
+    const updatedLeft = left + 1;
+    setLeft(updatedLeft);
+    setTotal(updatedLeft + right);
   };
 
-  const decreaseByOne = () => {
-    console.log("decreasing, value before", counter);
-    setCounter(counter - 1);
-  };
-
-  const setToZero = () => {
-    console.log("resetting to zero, value before", counter);
-    setCounter(0);
+  const handleRightClick = () => {
+    setAll(allClicks.concat("R"));
+    const updatedRight = right + 1;
+    setRight(updatedRight);
+    setTotal(updatedRight + left);
   };
 
   return (
     <div>
-      <Display counter={counter} />
-      <Button onSmash={increaseByOne} text="plus" />
-      <Button onSmash={setToZero} text="zero" />
-      <Button onSmash={decreaseByOne} text="minus" />
+      {left}
+      <Button handleClick={handleLeftClick} text={"left"} />
+      <Button handleClick={handleRightClick} text={"right"} />
+      {right}
+      <History allClicks={allClicks} />
+      <p>total {total}</p>
     </div>
   );
 };
