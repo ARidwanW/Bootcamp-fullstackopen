@@ -3,6 +3,8 @@
 // import viteLogo from '/vite.svg'
 // import './App.css'
 
+import { useState } from "react";
+
 // function App() {
 //   const [count, setCount] = useState(0)
 
@@ -56,7 +58,6 @@
 
 // export default App
 
-
 // =========================================================================
 
 // const Hello = (props) => {
@@ -88,7 +89,7 @@
 //   return (
 //     // <div>
 //     // using fragment instead of div for root component
-//     <>        
+//     <>
 //       <h1>Greetings</h1>
 //       <Hello name='Maya' age={26 + 10} />
 //       <Hello name={name} age={age} />
@@ -104,7 +105,7 @@
 
 // const App = () => {
 //   const friends = ['Peter ', 'Maya ']
-  
+
 //   return (
 //     <div>
 //       <p>
@@ -137,21 +138,180 @@
 
 //?? TO FIX
 
-let App = () => {
-  const friends = [
-    { name: 'Peter', age: 4 },    // this item is an object
-    { name: 'Maya', age: 10 },
-    { name: 'Alwan', age: 5 }
-  ]
+// let App = () => {
+//   const friends = [
+//     { name: 'Peter', age: 4 },    // this item is an object
+//     { name: 'Maya', age: 10 },
+//     { name: 'Alwan', age: 5 }
+//   ]
+
+//   return (
+//     //?? this rendered as primitive values separately
+//     <div>
+//       <p>{friends[0].name} {friends[0].age}</p>
+//       <p>{friends[1].name} {friends[1].age}</p>
+//       <p>Namanya {friends[2].name} umurnya {friends[2].age} tahun</p>
+//     </div>
+//   )
+// }
+
+// export default App
+
+// =========================================================================
+
+// C. Component state, event handlers
+
+// const Hello = (props) => {
+//   const bornYear = () => {
+//     const yearNow = new Date().getFullYear();
+//     return yearNow - props.age;
+//   };
+
+//   return (
+//     <div>
+//       <p>
+//         Hello {props.name}, you are {props.age} years old
+//       </p>
+//       <p>So you were probably born in {bornYear()}</p>
+//     </div>
+//   );
+// };
+
+// const App = () => {
+//   const name = "Peter";
+//   const age = 10;
+
+//   return (
+//     <div>
+//       <h1>Greetings</h1>
+//       <Hello name="Maya" age={26 + 10} />
+//       <Hello name="name" age={age} />
+//     </div>
+//   );
+// };
+
+// export default App;
+
+// =========================================================================
+
+// C.1 Destructuring
+
+// const Hello = (props) => {
+//   const { name, age } = props;
+//   const bornYear = new Date().getFullYear() - age;
+
+//   return (
+//     <div>
+//       <p>
+//         Hello {name}, you are {age} years old
+//       </p>
+//       <p>So you were probably born in {bornYear}</p>
+//     </div>
+//   );
+// };
+
+// const Hello = ({ name, age }) => {
+//   const bornYear = () => new Date().getFullYear() - age;
+
+//   return (
+//     <div>
+//       <p>
+//         Hello {name}, you are {age} years old
+//       </p>
+//       <p>So you were probably born in {bornYear()}</p>
+//     </div>
+//   );
+// };
+
+// const App = (props) => {
+//   const name = "Peter";
+//   const age = 10;
+//   const { counter } = props;
+
+//   return (
+//     <div>
+//       <h1>Greetings</h1>
+//       <Hello name="Maya" age={26 + 10} />
+//       <Hello name={name} age={age} />
+//       <div>
+//         {counter}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default App;
+
+// =========================================================================
+
+// C.2 Stateful component
+
+// import { useState } from "react";
+
+// const App = () => {
+//   const [counter, setCounter] = useState(0);
+
+//   // const handleClick = () => {
+//   //   console.log("clicked");
+//   //   setCounter(counter + 1);
+//   // };
+
+//   // setTimeout(() => {
+//   //   setCounter(counter + 1);
+//   // }, 1000);
+
+//   // console.log("rendering...", counter);
+
+//   const increaseByOne = () => setCounter(counter + 1);
+
+//   const setToZero = () => setCounter(0);
+
+//   return (
+//     <div>
+//       <div>{counter}</div>
+//       <button onClick={increaseByOne}>plus</button>
+//       <button onClick={setToZero}>zero</button>
+//     </div>
+//   );
+// };
+
+// export default App;
+
+// =========================================================================
+
+// C.2 lift the state up
+
+const Display = ({ counter }) => <div>{counter}</div>;
+
+const Button = ({ onSmash, text }) => <button onClick={onSmash}>{text}</button>;
+
+const App = () => {
+  const [counter, setCounter] = useState(0);
+  console.log("rendering with counter value", counter);
+
+  const increaseByOne = () => {
+    console.log("increasing, value before", counter);
+    setCounter(counter + 1);
+  };
+
+  const decreaseByOne = () => {
+    console.log("decreasing, value before", counter);
+    setCounter(counter - 1);
+  };
+
+  const setToZero = () => {
+    console.log("resetting to zero, value before", counter);
+    setCounter(0);
+  };
 
   return (
-    //?? this rendered as primitive values separately
     <div>
-      <p>{friends[0].name} {friends[0].age}</p>   
-      <p>{friends[1].name} {friends[1].age}</p>
-      <p>Namanya {friends[2].name} umurnya {friends[2].age} tahun</p>
+      <Display counter={counter} />
+      <Button onSmash={increaseByOne} text="plus" />
+      <Button onSmash={setToZero} text="zero" />
+      <Button onSmash={decreaseByOne} text="minus" />
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
