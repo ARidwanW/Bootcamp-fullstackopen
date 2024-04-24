@@ -422,46 +422,173 @@ import { useState } from "react";
 
 // D.2 Conditional rendering
 
-const History = (props) => {
-  console.log('props value is', props);
-  if (props.allClicks.length === 0) {
-    return <div>the app is used by pressing the buttons</div>;
-  }
-  return <div>button press history: {props.allClicks.join(" ")}</div>;
-};
+// const History = (props) => {
+//   console.log('props value is', props);
+//   if (props.allClicks.length === 0) {
+//     return <div>the app is used by pressing the buttons</div>;
+//   }
+//   return <div>button press history: {props.allClicks.join(" ")}</div>;
+// };
 
-const Button = ({ handleClick, text }) => {
-  return <button onClick={handleClick}>{text}</button>;
-};
+// const Button = ({ handleClick, text }) => {
+//   return <button onClick={handleClick}>{text}</button>;
+// };
+
+// const App = () => {
+//   const [left, setLeft] = useState(0);
+//   const [right, setRight] = useState(0);
+//   const [allClicks, setAll] = useState([]);
+//   const [total, setTotal] = useState(0);
+
+//   const handleLeftClick = () => {
+//     setAll(allClicks.concat("L"));
+//     const updatedLeft = left + 1;
+//     setLeft(updatedLeft);
+//     setTotal(updatedLeft + right);
+//   };
+
+//   const handleRightClick = () => {
+//     setAll(allClicks.concat("R"));
+//     const updatedRight = right + 1;
+//     setRight(updatedRight);
+//     setTotal(updatedRight + left);
+//   };
+
+//   return (
+//     <div>
+//       {left}
+//       <Button handleClick={handleLeftClick} text={"left"} />
+//       <Button handleClick={handleRightClick} text={"right"} />
+//       {right}
+//       <History allClicks={allClicks} />
+//       <p>total {total}</p>
+//     </div>
+//   );
+// };
+
+// export default App;
+
+// =========================================================================
+
+// D.3 Rules of Hooks
+
+//* hooks may only be called from the inside of function
+// const App = () => {
+//   //* these are ok
+//   const [age, setAge] = useState(0);
+//   const [name, setName] = useState("Juha Tauriainen");
+
+//   if (age > 10) {
+//     //! this does not work!
+//     const [foobar, setFoobar] = useState(null);
+//   }
+
+//   for (let i = 0; i < age; i++) {
+//     //! also this is not good
+//     const [rightwat, setRightWay] = useState(false);
+//   }
+
+//   const notGood = () => {
+//     //! and this is also illegal
+//     const [x, setX] = useState(-1000);
+//   };
+
+//   return <div></div>;
+// };
+
+// =========================================================================
+
+// D.4 Event Handling Revisited
+
+// const App = () => {
+//   const [value, setValue] = useState(0);
+
+//   const handleClick = () => {
+//     console.log("clicked the button");
+//     setValue(0);
+//   };
+
+//   return (
+//     <div>
+//       {value}
+//       <button onClick={handleClick}>reset to zero</button>
+//     </div>
+//   );
+// };
+
+// export default App;
+
+// =========================================================================
+
+// D.5 A function that returns a function (event handlers)
+
+// const App = () => {
+//   const [value, setValue] = useState(0);
+
+//   // const hello = (who) => {
+//   //   return () => console.log("hello ", who);
+//   // };
+
+//   //?? it is a matter of taste
+
+//   // const setToValue = (newValue) => () => {
+//   //   console.log("value now", newValue);
+//   //   setValue(newValue);
+//   // };
+
+//   const setToValue = (newValue) => {
+//     console.log("value now", newValue);
+//     setValue(newValue);
+//   };
+
+//   return (
+//     <div>
+//       {value}
+
+//       {/* <button onClick={hello("world")}>button</button>
+//       <button onClick={hello("react")}>button</button>
+//       <button onClick={hello("function")}>button</button> */}
+
+//       {/* <button onClick={setToValue(1000)}>thousand</button>
+//       <button onClick={setToValue(0)}>reset</button>
+//       <button onClick={setToValue(value + 1)}>increment</button> */}
+
+//       <button onClick={() => setToValue(1000)}>thousand</button>
+//       <button onClick={() => setToValue(0)}>reset</button>
+//       <button onClick={() => setToValue(value + 1)}>increment</button>
+//     </div>
+//   );
+// };
+
+// export default App;
+
+// =========================================================================
+
+// D.6 Passing Event Handlers to Child Components
+
+const Display = props => <div>{props.value}</div>
+
+const Button = (props) => (
+  <button onClick={props.handleClick}>{props.text}</button>
+);
 
 const App = () => {
-  const [left, setLeft] = useState(0);
-  const [right, setRight] = useState(0);
-  const [allClicks, setAll] = useState([]);
-  const [total, setTotal] = useState(0);
+  const [value, setValue] = useState(0);
 
-  const handleLeftClick = () => {
-    setAll(allClicks.concat("L"));
-    const updatedLeft = left + 1;
-    setLeft(updatedLeft);
-    setTotal(updatedLeft + right);
+  const setToValue = (newValue) => {
+    console.log("value now", newValue);
+    setValue(newValue);
   };
 
-  const handleRightClick = () => {
-    setAll(allClicks.concat("R"));
-    const updatedRight = right + 1;
-    setRight(updatedRight);
-    setTotal(updatedRight + left);
-  };
+  //! Do not define components within components
+  // const Display = props => <div>{props.value}</div>
 
   return (
     <div>
-      {left}
-      <Button handleClick={handleLeftClick} text={"left"} />
-      <Button handleClick={handleRightClick} text={"right"} />
-      {right}
-      <History allClicks={allClicks} />
-      <p>total {total}</p>
+      <Display value={value}/>
+      <Button handleClick={() => setToValue(1000)} text="thousand" />
+      <Button handleClick={() => setToValue(0)} text="reset" />
+      <Button handleClick={() => setToValue(value + 1)} text="increment" />
     </div>
   );
 };
