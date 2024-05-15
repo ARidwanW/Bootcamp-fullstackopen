@@ -75,7 +75,7 @@ const plus1 = (value) => {
 // console.log(plus1("ABC"));
 
 //?? functors
-plus2 = (value) => {
+const plus2 = (value) => {
   return value + 2;
 };
 
@@ -84,20 +84,52 @@ plus2 = (value) => {
 
 //* ========== some useful things 3 ==========
 const stringFunctor = (value, fn) => {
-  const chars = value.split("")
-  return chars.map((char) => {
-    return String.fromCharCode(fn(char.charCodeAt(0)))
-  }).join("")
-}
+  const chars = value.split("");
+  return chars
+    .map((char) => {
+      return String.fromCharCode(fn(char.charCodeAt(0)));
+    })
+    .join("");
+};
 
 const plus3 = (value) => {
-  return value + 3
-}
+  return value + 3;
+};
 
 const minus1 = (value) => {
-  return value - 1
-}
+  return value - 1;
+};
 
-console.log([3,4].map(plus3));
-console.log(stringFunctor("ABC", plus3));
-console.log(stringFunctor("XYZ", minus1));
+// console.log([3,4].map(plus3));
+// console.log(stringFunctor("ABC", plus3));
+// console.log(stringFunctor("XYZ", minus1));
+
+//* ========== some useful things 4 ==========
+//! what functors really are
+//?? object that can implemented "map" function
+
+const dragons = [
+  { name: "Fluffykins", health: 80 },
+  { name: "Deathlord", health: 9999999999 },
+  { name: "Littlely", health: 3 },
+];
+
+// const names = dragons.map((dragon, index) => dragon.name)
+
+// console.log(JSON.stringify(names, null, 2));
+
+//* ========== some useful things 5 ==========
+import Promise from "bluebird";
+
+const whenDragonLoaded = new Promise((resolve, reject) => {
+  // fake loading
+  setTimeout(() => {
+    resolve([{ name: "Fluffykins", health: 70 }]);
+  }, 2000);
+});
+
+const names = whenDragonLoaded
+  .map((dragon) => dragon.name)
+  .then((name) => console.log(name));
+
+console.log(names);
