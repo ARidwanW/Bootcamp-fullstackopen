@@ -1,4 +1,4 @@
-//* some useful things
+//* ========== some useful things 1 ==========
 
 const categories = [
   { id: "animals", parent: null },
@@ -28,8 +28,8 @@ const categories = [
 // }
 
 //?? using of recursion instead of loops
-console.log(categories, "\n");
-console.log("Making Tree\n");
+// console.log(categories, "\n");
+// console.log("Making Tree\n");
 
 const makeTree = (categories, parent) => {
   const node = {};
@@ -45,4 +45,59 @@ const makeTree = (categories, parent) => {
 
 // makeTree(categories, null);
 
-console.log(JSON.stringify(makeTree(categories, null), null, 2));
+// console.log(JSON.stringify(makeTree(categories, null), null, 2));
+
+//* ========== some useful things 2 ==========
+
+const plus1 = (value) => {
+  if (Array.isArray(value)) {
+    const newArray = [];
+    for (let i = 0; i < value.length; i++) {
+      newArray[i] = value[i] + 1;
+    }
+    return newArray;
+  }
+
+  if (typeof value === "string") {
+    const chars = value.split("");
+    const newCharArray = [];
+    for (let i = 0; i < chars.length; i++) {
+      newCharArray[i] = String.fromCharCode(chars[i].charCodeAt(0) + 1);
+    }
+    return newCharArray.join("");
+  }
+  return value + 1;
+};
+
+//?? call it
+// console.log(plus1(3));
+// console.log(plus1([1, 4]));
+// console.log(plus1("ABC"));
+
+//?? functors
+plus2 = (value) => {
+  return value + 2;
+};
+
+//?? the how it works
+// console.log([3, 4].map(plus2));
+
+//* ========== some useful things 3 ==========
+const stringFunctor = (value, fn) => {
+  const chars = value.split("")
+  return chars.map((char) => {
+    return String.fromCharCode(fn(char.charCodeAt(0)))
+  }).join("")
+}
+
+const plus3 = (value) => {
+  return value + 3
+}
+
+const minus1 = (value) => {
+  return value - 1
+}
+
+console.log([3,4].map(plus3));
+console.log(stringFunctor("ABC", plus3));
+console.log(stringFunctor("XYZ", minus1));
