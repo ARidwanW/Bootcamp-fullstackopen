@@ -119,17 +119,111 @@ const dragons = [
 // console.log(JSON.stringify(names, null, 2));
 
 //* ========== some useful things 5 ==========
-import Promise from "bluebird";
+// import Promise from "bluebird";
 
-const whenDragonLoaded = new Promise((resolve, reject) => {
-  // fake loading
-  setTimeout(() => {
-    resolve([{ name: "Fluffykins", health: 70 }]);
-  }, 2000);
-});
+// const whenDragonLoaded = new Promise((resolve, reject) => {
+//   // fake loading
+//   setTimeout(() => {
+//     resolve([{ name: "Fluffykins", health: 70 }]);
+//   }, 2000);
+// });
 
-const names = whenDragonLoaded
-  .map((dragon) => dragon.name)
-  .then((name) => console.log(name));
+// const names = whenDragonLoaded
+//   .map((dragon) => dragon.name)
+//   .then((name) => console.log(name));
 
-console.log(names);
+// console.log(names);
+
+//* ========== some useful things 6 ==========
+//! basic promises
+// let promise = new Promise((resolve, reject) => {
+//   setTimeout(() => {
+//     resolve(console.log("done"));
+//   }, 1000);
+// });
+
+// console.log(promise);
+
+//* ========== some useful things 7 ==========
+//?? before promises (just example, doesnt work if it run)
+// let addImg = (src) => {
+//   let imgElement = document.createElement("img");
+//   imgElement.src = src;
+//   document.body.appendChild(imgElement);
+// };
+
+// const loadImage = (url, callback) => {
+//   let image = new Image();
+
+//   image.onload = () => {
+//     callback(null, image);
+//   };
+
+//   image.onerror = () => {
+//     let message = "Could not load image at " + url;
+//     callback(new Error(message));
+//   };
+
+//   image.src = url;
+// };
+
+// export default loadImage
+
+// // url, callbackFn(error, img)
+// loadImage("", (error, img1) => {
+//   if (error) throw error;
+//   addImg(img1.src);
+//   loadImage("", (error, img2) => {
+//     if (error) throw error;
+//     addImg(img2.src);
+//     loadImage("", (error, img3) => {
+//       if (error) throw error;
+//       addImg(img3.src);
+//     });
+//   });
+// });
+
+//* ========== some useful things 8 ==========
+//?? after promises
+let addImg = (src) => {
+  let imgElement = document.createElement("img");
+  imgElement.src = src;
+  document.body.appendChild(imgElement);
+};
+
+const loadImage = (url) => {
+  return new Promise((resolve, reject) => {
+    let image = new Image();
+
+    image.onload = () => {
+      resolve(image);
+    };
+
+    image.onerror = () => {
+      let message = "Could not loead image at " + url;
+      reject(new Error(msg));
+    };
+
+    image.src = url;
+  });
+};
+
+export default loadImage;
+
+// loadImage("url").then((img1) => {
+//   addImg(img1.src);
+//   loadImage("url").then((img2) => {
+//     addImg(img2.src);
+//     loadImage("url").then((img3) => {
+//       addImg(img3.src);
+//     });
+//   });
+// });
+
+//?? because using promises
+Promise.all([loadImage("url"), loadImage("url"), loadImage("url")]).then(
+  (images) => {
+    console.log(images);
+    images.forEach((img) => addImg(img.src));
+  }
+);
