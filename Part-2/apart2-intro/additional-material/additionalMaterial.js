@@ -185,30 +185,30 @@ const dragons = [
 
 //* ========== some useful things 8 ==========
 //?? after promises
-let addImg = (src) => {
-  let imgElement = document.createElement("img");
-  imgElement.src = src;
-  document.body.appendChild(imgElement);
-};
+// let addImg = (src) => {
+//   let imgElement = document.createElement("img");
+//   imgElement.src = src;
+//   document.body.appendChild(imgElement);
+// };
 
-const loadImage = (url) => {
-  return new Promise((resolve, reject) => {
-    let image = new Image();
+// const loadImage = (url) => {
+//   return new Promise((resolve, reject) => {
+//     let image = new Image();
 
-    image.onload = () => {
-      resolve(image);
-    };
+//     image.onload = () => {
+//       resolve(image);
+//     };
 
-    image.onerror = () => {
-      let message = "Could not loead image at " + url;
-      reject(new Error(msg));
-    };
+//     image.onerror = () => {
+//       let message = "Could not loead image at " + url;
+//       reject(new Error(msg));
+//     };
 
-    image.src = url;
-  });
-};
+//     image.src = url;
+//   });
+// };
 
-export default loadImage;
+// export default loadImage;
 
 // loadImage("url").then((img1) => {
 //   addImg(img1.src);
@@ -221,9 +221,37 @@ export default loadImage;
 // });
 
 //?? because using promises
-Promise.all([loadImage("url"), loadImage("url"), loadImage("url")]).then(
-  (images) => {
-    console.log(images);
-    images.forEach((img) => addImg(img.src));
-  }
-);
+// Promise.all([loadImage("url"), loadImage("url"), loadImage("url")]).then(
+//   (images) => {
+//     console.log(images);
+//     images.forEach((img) => addImg(img.src));
+//   }
+// );
+
+//* ========== some useful things 9 ==========
+//! streams
+
+// const stupidNumberStream = {
+//   each: (callback) => {
+//     setTimeout(() => callback(1), 1000);
+//     setTimeout(() => callback(2), 1000);
+//     setTimeout(() => callback(3), 1000);
+//   },
+// };
+
+// stupidNumberStream.each(console.log)
+
+import * as fs from "fs";
+import highland from "highland";
+
+highland(fs.createReadStream("customers.csv", "utf8"))
+  .split() //! make the lines not a one big strings (try to comment if you want to see it)
+  .map((line) => line.split(","))
+  .map((parts) => ({
+    //! interpreted this as an object using (())
+    name: parts[0],
+    numPurchases: parts[1],
+  }))
+  .filter((customer) => customer.numPurchases > 2)
+  .map((customer) => customer.name)
+  .each((x) => console.log("each: ", x));

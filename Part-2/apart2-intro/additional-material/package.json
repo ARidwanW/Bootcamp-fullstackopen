@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "bluebird": "^3.7.2",
+    "highland": "^2.13.5"
+  },
+  "type": "module"
+}
