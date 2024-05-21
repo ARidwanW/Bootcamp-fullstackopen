@@ -244,14 +244,82 @@ const dragons = [
 import * as fs from "fs";
 import highland from "highland";
 
-highland(fs.createReadStream("customers.csv", "utf8"))
-  .split() //! make the lines not a one big strings (try to comment if you want to see it)
-  .map((line) => line.split(","))
-  .map((parts) => ({
-    //! interpreted this as an object using (())
-    name: parts[0],
-    numPurchases: parts[1],
-  }))
-  .filter((customer) => customer.numPurchases > 2)
-  .map((customer) => customer.name)
-  .each((x) => console.log("each: ", x));
+// highland(fs.createReadStream("customers.csv", "utf8"))
+//   .split() //! make the lines not a one big strings (try to comment if you want to see it)
+//   .map((line) => line.split(","))
+//   .map((parts) => ({
+//     //! interpreted this as an object using (())
+//     name: parts[0],
+//     numPurchases: parts[1],
+//   }))
+//   .filter((customer) => customer.numPurchases > 2)
+//   .map((customer) => customer.name)
+//   .each((x) => console.log("each: ", x));
+
+//* ========== some useful things 10 ==========
+//! Monad -> functors that implement flatmap
+
+// highland(["cat", "meal", "trumpet"]).each((word) => console.log(word));
+// const stream = highland();
+// stream.each(word => console.log(word))
+// stream.write('cat')
+// stream.write('meal')
+// stream.write('trumpet')
+
+// const Bacon = require('baconjs');
+// const stream = new Bacon.Bus();
+// import {Bus} from 'baconjs';
+// const stream = new Bus();
+
+// stream.onValue((word) => console.log(word));
+//* stream is functors
+// stream.map(word => word.toUpperCase()).onValue(word => console.log(word))
+
+// stream.push("cat");
+// stream.push("meal");
+// stream.push("trumpet");
+
+//! just example
+import fetch from "node-fetch";
+import { Bus, fromPromise } from "baconjs";
+
+const getInPortuguese = (word) => {
+  const apiKey = "";
+  const url =
+    "https://www.googleapis.com" +
+    "/language/translate/v2" +
+    "?key=" +
+    apiKey +
+    "&source=en" +
+    "&target=pt" +
+    "&q=" +
+    encodeURIComponent(word);
+  const promise = fetch(url)
+    .then((response) => response.json())
+    .then(
+      (parsedResponse) => parsedResponse.data.translation[0].translatedText
+    );
+  console.log(promise);
+  const stream = fromPromise(promise);
+  console.log(stream);
+  return stream;
+};
+
+// getInPortuguese('meal').onValue(word => console.log(word)) // output: refeicao (in portugese)
+const stream = Bus();
+
+stream
+  .map((word) => getInPortuguese(word))
+  .onValue((word) => console.log(word)); // output: Bacon.fromPomise({})
+// output: Bacon.fromPomise({})
+// output: Bacon.fromPomise({})
+
+stream
+  .flatMap((word) => getInPortuguese(word)) // same as bind or chain, then can add map after flatmap
+  .onValue((word) => console.log(word));  // output: gato
+  // refeicao
+  // trombeta
+
+stream.push("cat");
+stream.push("meal");
+stream.push("trumpet");
