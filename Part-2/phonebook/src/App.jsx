@@ -1,21 +1,29 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: "Arto Hellas", number: "040-1234567" },
-    { name: "Ada Lovelace", number: "39-44-5323523" },
-    { name: "Dan Abramov", number: "12-43-234345" },
-    { name: "Mary Poppendieck", number: "39-23-6423122" },
-  ]);
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filteredName, setFilteredName] = useState("");
 
+  const hook = () => {
+    console.log("effect");
+    axios.get("http://localhost:3001/persons").then((response) => {
+      console.log("promise fulfilled");
+      setPersons(response.data);
+      console.log(response.data);
+    });
+  };
+
+  useEffect(hook, []);
+
   const addPerson = (event) => {
     event.preventDefault();
+    console.log("add person");
 
     const personObject = {
       name: newName,
@@ -23,12 +31,27 @@ const App = () => {
     };
 
     // const existPerson = persons.filter(person => person.name === newName)
-    // const existPerson = persons.some(person => person.name === newName)
-    const existPerson = persons.some((person) =>
-      Object.entries(personObject).every(
-        ([key, value]) => person[key] === value
-      )
-    );
+    const existPerson = persons.some(person => person.name === newName)
+    
+    //! for key-pairs exist
+    // const existPerson = persons.some((person) =>
+    //   Object.entries(personObject).every(
+    //     ([key, value]) => person[key] === value
+    //   )
+    // );
+
+    //! for existed value
+    // let existKey = "";
+    // const existPerson = persons.some((person) =>
+    //   Object.entries(personObject).some(([key, value]) => {
+    //     console.log(key, value, person, person[key]);
+    //     if (person[key] === value) {
+    //       existKey = key;
+    //       return true;
+    //     }
+    //     return false;
+    //   })
+    // );
 
     // console.log(existPerson.length);
     console.log(existPerson);
@@ -41,6 +64,7 @@ const App = () => {
       setNewNumber("");
     } else {
       alert(`${newName} is already added to phonebook`);
+      // alert(`${personObject[existKey]} is already added to phonebook`);
     }
   };
 
@@ -134,7 +158,7 @@ const App = () => {
         onChangeNumber={handleNumberChange}
       />
       <h3>Numbers</h3>
-      <Persons persons={filteredPersons}/>
+      <Persons persons={filteredPersons} />
     </div>
   );
 };
