@@ -3,6 +3,7 @@ import axios from "axios";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
+import personService from "./services/persons"
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -10,16 +11,12 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
   const [filteredName, setFilteredName] = useState("");
 
-  const hook = () => {
-    console.log("effect");
-    axios.get("http://localhost:3001/persons").then((response) => {
-      console.log("promise fulfilled");
-      setPersons(response.data);
-      console.log(response.data);
-    });
-  };
-
-  useEffect(hook, []);
+  useEffect(() => {
+    personService
+      .getAll()
+      .then(initialPersons =>
+        setPersons(initialPersons))
+  }, [])
 
   const addPerson = (event) => {
     event.preventDefault();
@@ -31,8 +28,9 @@ const App = () => {
     };
 
     // const existPerson = persons.filter(person => person.name === newName)
-    const existPerson = persons.some(person => person.name === newName)
-    
+    const isPersonExist = persons.some(person => person.name === newName)
+    const existPerson = persons.find(p => p.name === newName)
+
     //! for key-pairs exist
     // const existPerson = persons.some((person) =>
     //   Object.entries(personObject).every(
@@ -54,17 +52,35 @@ const App = () => {
     // );
 
     // console.log(existPerson.length);
-    console.log(existPerson);
+    console.log('is person exist:', isPersonExist);
+    console.log('exist person', existPerson);
 
     // existPerson.legth === 0
-    if (!existPerson) {
-      // persons.concat(personObject)
-      setPersons([...persons, personObject]);
-      setNewName("");
-      setNewNumber("");
-    } else {
-      alert(`${newName} is already added to phonebook`);
+    if (!isPersonExist) {
+      personService
+        .create(personObject)
+        .then(returnedPerson => {
+          console.log('create person', returnedPerson);
+          setPersons(persons.concat(returnedPerson))
+          setNewName("")
+          setNewNumber("")
+        })
+    } else if (window.confirm(
+      `${newName} is already added to phonebook, replace the old number with a new one?`)) {
+      console.log('Updating new number for', existPerson);
+      // alert(`${newName} is already added to phonebook`);
       // alert(`${personObject[existKey]} is already added to phonebook`);
+      
+      personService
+        .update(existPerson.id, personObject)
+        .then(returnedPerson => {
+          setPersons(persons.map(p => p.id !== existPerson.id ? p : returnedPerson))
+          setNewName("")
+          setNewNumber("")
+          console.log('updated', returnedPerson);
+        })
+    } else {
+      console.log('Not changed');
     }
   };
 
@@ -79,6 +95,23 @@ const App = () => {
   const handleNameFilterChange = (event) => {
     setFilteredName(event.target.value);
   };
+
+  const handlePersonDelete = (id) => {
+    const person = persons.find(p => p.id === id)
+
+    console.log(`Deleting ${person.name} from phonebook`);
+
+    if (window.confirm(`Are you sure want to delete ${person.name}?`)) {
+      personService
+        .deleteId(id)
+        .then(deletedPerson => {
+          console.log('Deleted', deletedPerson);
+          setPersons(persons.filter(p => p.id !== id))
+        })
+    } else {
+      console.log(`Cancel to delete ${person.name}`);
+    }
+  }
 
   const filteredPersons = persons.filter((person) =>
     person.name.toLowerCase().includes(filteredName.toLowerCase())
@@ -158,7 +191,7 @@ const App = () => {
         onChangeNumber={handleNumberChange}
       />
       <h3>Numbers</h3>
-      <Persons persons={filteredPersons} />
+      <Persons persons={filteredPersons} onDelete={handlePersonDelete} />
     </div>
   );
 };
