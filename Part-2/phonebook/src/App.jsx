@@ -1,22 +1,22 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+// import axios from "axios";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
-import personService from "./services/persons"
+import personService from "./services/persons";
+import Notification from "./components/Notification";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filteredName, setFilteredName] = useState("");
+  const [notifMessage, setNotifMessage] = useState(null);
+  const [notifType, setNotifType] = useState("success");
 
   useEffect(() => {
-    personService
-      .getAll()
-      .then(initialPersons =>
-        setPersons(initialPersons))
-  }, [])
+    personService.getAll().then((initialPersons) => setPersons(initialPersons));
+  }, []);
 
   const addPerson = (event) => {
     event.preventDefault();
@@ -28,8 +28,8 @@ const App = () => {
     };
 
     // const existPerson = persons.filter(person => person.name === newName)
-    const isPersonExist = persons.some(person => person.name === newName)
-    const existPerson = persons.find(p => p.name === newName)
+    const isPersonExist = persons.some((person) => person.name === newName);
+    const existPerson = persons.find((p) => p.name === newName);
 
     //! for key-pairs exist
     // const existPerson = persons.some((person) =>
@@ -52,35 +52,70 @@ const App = () => {
     // );
 
     // console.log(existPerson.length);
-    console.log('is person exist:', isPersonExist);
-    console.log('exist person', existPerson);
+    console.log("is person exist:", isPersonExist);
+    console.log("exist person", existPerson);
 
     // existPerson.legth === 0
     if (!isPersonExist) {
-      personService
-        .create(personObject)
-        .then(returnedPerson => {
-          console.log('create person', returnedPerson);
-          setPersons(persons.concat(returnedPerson))
-          setNewName("")
-          setNewNumber("")
-        })
-    } else if (window.confirm(
-      `${newName} is already added to phonebook, replace the old number with a new one?`)) {
-      console.log('Updating new number for', existPerson);
+      personService.create(personObject).then((returnedPerson) => {
+        console.log("create person", returnedPerson);
+
+        setPersons(persons.concat(returnedPerson));
+        setNewName("");
+        setNewNumber("");
+
+        console.log("Notification: Person added successfully");
+
+        setNotifType("success");
+        setNotifMessage(`Added ${returnedPerson.name}`);
+
+        setTimeout(() => {
+          setNotifMessage(null);
+        }, 5000);
+      });
+    } else if (
+      window.confirm(
+        `${newName} is already added to phonebook, replace the old number with a new one?`
+      )
+    ) {
+      console.log("Updating new number for", existPerson);
       // alert(`${newName} is already added to phonebook`);
       // alert(`${personObject[existKey]} is already added to phonebook`);
-      
+
       personService
         .update(existPerson.id, personObject)
-        .then(returnedPerson => {
-          setPersons(persons.map(p => p.id !== existPerson.id ? p : returnedPerson))
-          setNewName("")
-          setNewNumber("")
-          console.log('updated', returnedPerson);
+        .then((returnedPerson) => {
+          setPersons(
+            persons.map((p) => (p.id !== existPerson.id ? p : returnedPerson))
+          );
+
+          console.log("updated", returnedPerson);
+
+          setNewName("");
+          setNewNumber("");
+
+          console.log("Notification: Number changed successfully");
+
+          setNotifType("success");
+          setNotifMessage(`Number for ${returnedPerson.name} changed`);
+
+          setTimeout(() => {
+            setNotifMessage(null);
+          }, 5000);
         })
+        .catch((error) => {
+          setNotifType("error");
+          setNotifMessage(
+            `Information of ${newName} has already been removed from server`
+          );
+          setPersons(persons.filter((p) => p.id !== existPerson.id));
+
+          setTimeout(() => {
+            setNotifMessage(null);
+          }, 5000);
+        });
     } else {
-      console.log('Not changed');
+      console.log("Not changed");
     }
   };
 
@@ -97,21 +132,31 @@ const App = () => {
   };
 
   const handlePersonDelete = (id) => {
-    const person = persons.find(p => p.id === id)
+    const person = persons.find((p) => p.id === id);
 
     console.log(`Deleting ${person.name} from phonebook`);
 
     if (window.confirm(`Are you sure want to delete ${person.name}?`)) {
       personService
         .deleteId(id)
-        .then(deletedPerson => {
-          console.log('Deleted', deletedPerson);
-          setPersons(persons.filter(p => p.id !== id))
+        .then((deletedPerson) => {
+          console.log("Deleted", deletedPerson);
+          setPersons(persons.filter((p) => p.id !== id));
         })
+        .catch((error) => {
+          setNotifType("error");
+          setNotifMessage(
+            `Information of ${person.name} has already been removed from server`
+          );
+          setPersons(persons.filter((p) => p.id !== id));
+          setTimeout(() => {
+            setNotifMessage(null);
+          }, 5000);
+        });
     } else {
       console.log(`Cancel to delete ${person.name}`);
     }
-  }
+  };
 
   const filteredPersons = persons.filter((person) =>
     person.name.toLowerCase().includes(filteredName.toLowerCase())
@@ -177,6 +222,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification type={notifType} message={notifMessage} />
       <Filter
         text={"filter shown with"}
         value={filteredName}
