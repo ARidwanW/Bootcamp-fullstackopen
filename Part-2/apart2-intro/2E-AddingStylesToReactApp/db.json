@@ -54,6 +54,61 @@
       "id": "1503",
       "content": "After extracting communication to separated module",
       "important": false
+    },
+    {
+      "id": "9401",
+      "content": "This is not real-time",
+      "important": false
+    },
+    {
+      "id": "cbc1",
+      "content": "This will be update automatically if depedency of useEffect filled by notes",
+      "important": false
+    },
+    {
+      "id": "1ca4",
+      "content": "this will be update automatically?",
+      "important": false
+    },
+    {
+      "id": "90c8",
+      "content": "so the notes will not be updated if the setNote doesn't call and the conditional useEffect for initial note",
+      "important": true
+    },
+    {
+      "id": "52a3",
+      "content": "after this, it will get all the note",
+      "important": false
+    },
+    {
+      "id": "48cf",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "5d9a",
+      "content": "this will be updated",
+      "important": true
+    },
+    {
+      "id": "2a04",
+      "content": "is this will update",
+      "important": true
+    },
+    {
+      "id": "341b",
+      "content": "real time, but always fetching data",
+      "important": false
+    },
+    {
+      "id": "0d24",
+      "content": "is this will update",
+      "important": false
+    },
+    {
+      "id": "8579",
+      "content": "please update",
+      "important": true
     }
   ]
 }
