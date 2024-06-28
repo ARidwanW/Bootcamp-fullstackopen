@@ -1,35 +1,81 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from "react";
+import countriesService from "./services/countries";
+import Country from "./components/Country";
+import CountryDetail from "./components/CountryDetail";
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = () => {
+  const [allCountries, setAllCountries] = useState(null);
+  const [search, setSearch] = useState("");
+  const [selectedCountry, setSelectedCountry] = useState(null);
+
+  useEffect(() => {
+    countriesService
+      .getAll()
+      .then((allCountries) => {
+        console.log(allCountries);
+        setAllCountries(allCountries);
+      })
+      .catch((error) => {
+        console.log("Error fetching countries:", error);
+      });
+  }, []);
+
+  const handleSearch = (event) => {
+    console.log(event.target.value);
+    setSearch(event.target.value);
+    setSelectedCountry(null);
+  };
+
+  const searchCountries = allCountries?.filter((country) =>
+    country.name.common.toLowerCase().includes(search.toLowerCase())
+  );
+
+  console.log("search countries: ", searchCountries);
+
+  const sortedCountries = searchCountries
+    ?.slice()
+    .sort((a, b) => a.name.common.localeCompare(b.name.common));
+
+  console.log("sorted country", sortedCountries);
+
+  const handleShowCountry = (officialName) => {
+    console.log("the button is pushed");
+    
+    const showCountry = sortedCountries?.find(
+      (c) => c.name.official === officialName
+    );
+    setSelectedCountry(showCountry);
+  };
+
+  const displayCountries = () => {
+    if (selectedCountry) {
+      return <CountryDetail country={selectedCountry} />;
+    } else if (sortedCountries?.length > 10) {
+      return <div>Too many matches, specify another filter</div>;
+    } else if (sortedCountries?.length === 1) {
+      return <CountryDetail country={sortedCountries[0]} />;
+    } else if (sortedCountries?.length < 1) {
+      return <div>There is no country, try another filter</div>;
+    } else {
+      return sortedCountries?.map((c) => (
+        <Country
+          key={c.name.official}
+          country={c.name.common}
+          onShow={() => handleShowCountry(c.name.official)}
+        />
+      ));
+    }
+  };
 
   return (
-    <>
+    <div>
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <span>Find countries </span>
+        <input value={search} onChange={handleSearch} />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+      {displayCountries()}
+    </div>
+  );
+};
 
-export default App
+export default App;
