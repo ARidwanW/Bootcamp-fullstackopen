@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "baconjs": "^3.0.17",
+    "bluebird": "^3.7.2",
+    "highland": "^2.13.5",
+    "node-fetch": "^3.3.2"
+  },
+  "type": "module"
+}

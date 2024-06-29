@@ -1,0 +1,59 @@
+{
+  "notes": [
+    {
+      "id": "1",
+      "content": "HTML is easy",
+      "important": true
+    },
+    {
+      "id": "2",
+      "content": "Browser can execute only JavaScript",
+      "important": true
+    },
+    {
+      "id": "3",
+      "content": "GET and POST are the most important methods of HTTP protocol",
+      "important": false
+    },
+    {
+      "id": "4",
+      "content": "Fetching data using axios",
+      "important": true
+    },
+    {
+      "id": "5",
+      "content": "Altering data in Server",
+      "important": false
+    },
+    {
+      "id": "6",
+      "content": "look at the id",
+      "important": true
+    },
+    {
+      "id": "3169",
+      "content": "Then look the id again...",
+      "important": true
+    },
+    {
+      "id": "9c82",
+      "content": "Post is used to create new resources",
+      "important": false
+    },
+    {
+      "id": "9d6b",
+      "content": "Dont forget to set the state so it will update automatically",
+      "important": true
+    },
+    {
+      "id": "f625",
+      "content": "a new note...",
+      "important": false
+    },
+    {
+      "id": "1503",
+      "content": "After extracting communication to separated module",
+      "important": false
+    }
+  ]
+}
