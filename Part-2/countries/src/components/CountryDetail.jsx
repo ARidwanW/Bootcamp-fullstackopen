@@ -1,4 +1,3 @@
-// import { fetchWeatherApi } from "openmeteo";
 import { useEffect, useState } from "react";
 import weatherService from "../services/weathers";
 

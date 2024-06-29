@@ -14,7 +14,6 @@ const App = () => {
     countriesService
       .getAll()
       .then((allCountries) => {
-        console.log(allCountries);
         setAllCountries(allCountries);
         setNotification(null);
       })
@@ -25,7 +24,6 @@ const App = () => {
   }, []);
 
   const handleSearch = (event) => {
-    console.log(event.target.value);
     setSearch(event.target.value);
     setSelectedCountry(null);
   };
@@ -34,16 +32,10 @@ const App = () => {
     country.name.common.toLowerCase().includes(search.toLowerCase())
   );
 
-  console.log("search countries: ", searchCountries);
-
   const sortedCountries = searchCountries
     ?.sort((a, b) => a.name.common.localeCompare(b.name.common));
 
-  console.log("sorted country", sortedCountries);
-
   const handleShowCountry = (officialName) => {
-    console.log("the button is pushed");
-
     const showCountry = sortedCountries?.find(
       (c) => c.name.official === officialName
     );
